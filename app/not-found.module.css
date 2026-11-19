@@ -1,0 +1,42 @@
+.main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 100vh;
+  padding: 2rem 1.25rem;
+  text-align: center;
+}
+
+.code {
+  color: var(--muted);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.9rem;
+  letter-spacing: 0.15em;
+}
+
+.title {
+  font-size: 1.6rem;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+}
+
+.message {
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.link {
+  margin-top: 1rem;
+  padding: 0.65rem 1.1rem;
+  color: #ffffff;
+  background: var(--accent);
+  font-size: 0.9rem;
+  font-weight: 600;
+  border-radius: 8px;
+}
+
+.link:hover {
+  background: var(--accent-hover);
+}
