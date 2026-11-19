@@ -1,5 +1,5 @@
 {
-  "name": "cs391-url-shortener",
+  "name": "cs303-url-shortener",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -9,8 +9,9 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "mongodb": "^7.9.0",
+    "next": "15.1.6",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "next": "15.1.6"
+    "react-dom": "^19.0.0"
   }
 }

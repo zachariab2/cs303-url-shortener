@@ -1,36 +1,58 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# URL Shortener
 
-## Getting Started
+CS303 mini project. Turn a long URL into a short alias, then visiting
+`YOUR-APP.COM/alias` redirects to the original link.
 
-First, run the development server:
+Built with the Next.js App Router and MongoDB.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Setup
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+1. Install dependencies:
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+   ```bash
+   npm install
+   ```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+2. Create `.env.local` in the project root with your MongoDB Atlas connection
+   string:
 
-## Learn More
+   ```
+   MONGO_URI="mongodb+srv://user:password@cluster.mongodb.net/?retryWrites=true&w=majority"
+   ```
 
-To learn more about Next.js, take a look at the following resources:
+   In Atlas, under Network Access, allow access from any IP address so the
+   deployed version can reach the database.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+3. Run the dev server:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+   ```bash
+   npm run dev
+   ```
 
-## Deploy on Vercel
+## Deploying
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Add `MONGO_URI` to the project's Environment Variables in the Vercel dashboard
+before deploying, otherwise the deployed app cannot reach the database.
+`.env.local` is gitignored and is never uploaded.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## How it works
+
+| Path | What it does |
+| --- | --- |
+| `app/page.js` | Home page; renders the form |
+| `app/components/ShortenForm.js` | Client form: validates input, posts to the API, shows errors |
+| `app/components/ResultCard.js` | Shows the finished short link with a copy button |
+| `app/api/shorten/route.js` | `POST` handler: validates, then stores the alias |
+| `app/[alias]/page.js` | Looks up the alias and server-side `redirect()`s to the URL |
+| `app/not-found.js` | Shown when an alias does not exist |
+| `lib/mongodb.js` | Cached MongoDB connection |
+| `lib/links.js` | Reads and writes the `links` collection |
+| `lib/validation.js` | URL and alias rules, shared by the form and the API |
+
+Validation lives in one module that both the browser and the server import, so
+the two can never disagree. The client checks run first for instant feedback;
+the API route runs them again because a client can be bypassed.
+
+Duplicate aliases are prevented by a unique index on `alias`. That holds even if
+two people submit the same alias at the same moment — the database rejects the
+second write, and the API turns that into a "that alias is taken" message.
